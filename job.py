@@ -14,8 +14,9 @@ from collector import download_today_export
 
 LONDON = ZoneInfo("Europe/London")
 ACCOUNTS = {
-    "RUB01", "RUB02", "RUB03", "SIM08", "SIM09",
-    "SLA02", "GRP01", "SUR02", "DOR01",
+    code.strip().upper()
+    for code in os.getenv("ACCOUNT_CODES", "").split(",")
+    if code.strip()
 }
 
 
@@ -72,15 +73,15 @@ def filter_accounts(source: Path, target_day) -> tuple[Path, int, str]:
 
 
 def send_email(attachment: Path, row_count: int, target_day) -> None:
-    username = os.getenv("MAIL_USERNAME", "sam@mcmurrayshaulage.com").strip()
+    username = os.getenv("MAIL_USERNAME", "").strip()
     password = os.getenv("MAIL_PASSWORD", "")
     sender = os.getenv("MAIL_FROM", username).strip()
-    recipient = os.getenv(
-        "MAIL_TO", "customerservice@mcmurrayshaulage.com"
-    ).strip()
+    recipient = os.getenv("MAIL_TO", "").strip()
 
-    if not password:
-        raise RuntimeError("MAIL_PASSWORD is not configured in Render")
+    if not username or not password or not sender or not recipient:
+        raise RuntimeError(
+            "MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM and MAIL_TO must be configured in Render"
+        )
 
     message = EmailMessage()
     display_date = target_day.strftime("%d/%m/%Y")
@@ -125,6 +126,9 @@ def main() -> int:
             flush=True,
         )
         return 0
+
+    if not ACCOUNTS:
+        raise RuntimeError("ACCOUNT_CODES is not configured in Render")
 
     target_day = now.date()
     print(f"[job] Starting export for {target_day.isoformat()}", flush=True)
