@@ -1,0 +1,25 @@
+services:
+  - type: cron
+    name: tpn-daily-account-export
+    runtime: docker
+    schedule: "0 16,17 * * 1-5"
+    dockerCommand: python job.py
+    envVars:
+      - key: TPN_USERNAME
+        sync: false
+      - key: TPN_PASSWORD
+        sync: false
+      - key: MAIL_USERNAME
+        value: sam@mcmurrayshaulage.com
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM
+        value: sam@mcmurrayshaulage.com
+      - key: MAIL_TO
+        value: customerservice@mcmurrayshaulage.com
+      - key: TPN_LOGIN_URL
+        value: https://pilot.tpnconnect.com/
+      - key: DATE_FORMAT
+        value: "%d/%m/%Y"
+      - key: HEADLESS
+        value: "true"
