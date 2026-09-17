@@ -9,14 +9,16 @@ services:
         sync: false
       - key: TPN_PASSWORD
         sync: false
+      - key: ACCOUNT_CODES
+        sync: false
       - key: MAIL_USERNAME
-        value: sam@mcmurrayshaulage.com
+        sync: false
       - key: MAIL_PASSWORD
         sync: false
       - key: MAIL_FROM
-        value: sam@mcmurrayshaulage.com
+        sync: false
       - key: MAIL_TO
-        value: customerservice@mcmurrayshaulage.com
+        sync: false
       - key: TPN_LOGIN_URL
         value: https://pilot.tpnconnect.com/
       - key: DATE_FORMAT
